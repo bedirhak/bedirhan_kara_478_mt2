@@ -3,11 +3,11 @@ const socket = require('socket.io');
 const path = require("path");
 const hbs = require("hbs");
 const db = require('./db'); // add db.js data to app.js
-
+const stocks = require('./routes/stocks.js');
 
 
 const app = express();
-const server = app.listen(8080);
+const server = app.listen(8090);
 
 app.use(express.static('public'));
 
@@ -24,14 +24,19 @@ app.get("/test", (req, res) => {
     // Get input from post, get, url params
     // Process data, (insert into db)
  
-    db.products.categoryNames = (db.category);
+    const products = db.products;
+    products.categoryNames = db.category;
    
     // Output: (html, json)
    res.render("mainUserTable", { 
-     title: "Bedirhan Kara Mt2",
-     products: db.products,
+     title: "Products",
+     products: products,
+     categoryNames: db.category,
      // cssFile : "test.css",
      //layout: false   // to stop default layout
      //layout: "layout/base2"   // to use a different base
    })    
  });
+
+
+app.use("/stocks", stocks);

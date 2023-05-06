@@ -14,31 +14,31 @@
     {{#each products}}
     <tr>
         <td class='table-id'>{{this.id}}</td>
-        <td class='table-category'>{{products.categoryNames}}</td>
+        <td class='table-category'>
+          {{#if this.category }}
+            {{lookup ../categoryNames this.category}}
+          {{else }}
+              {{../categoryNames.[0]}}
+          {{/if}}
+        </td>
         <td class='table-name'>{{this.name}}</td>
         <td class='table-price'>{{this.price}}</td>
         <td class='table-stock'>{{this.stock}}</td>
         <td class='table-ops'>
           {{#if this.stock }}
-            YES
+              <button class="buy-button" id="{{this.id}}" >BUY</button>
           {{else}}
-              <span>Out Of Stock</span>
+            <span>Out of Stock</span>
           {{/if}}
         </td>
     </tr>
     {{/each}}
   </table>
 
-  <p>{{products.categoryNames.[1]}}</p>
-  <p>{{products.categoryNames}}</p>
-
-
-  {{#each products.categoryNames}}
-       <h2>{{@index}} - {{products.categoryNames}} - {{ products.categoryNames.[1]}}</h2>
-  {{/each}}
 
 </div>
 <hr>
+
 
 {{! Display array of objects, "if - else" is another helper }}
 {{! lookup finds index/property of the given object.,  .. means parent context}}
