@@ -1,0 +1,90 @@
+{{! Access a property in context with html escape}}  
+<h2>{{title}}</h2>
+{{! Display an array, "each" is called helper, "this" or "." refers the current item }}
+<div>
+  <table class="product-info-table">
+    <tr>
+      <td>Id</td>
+      <td>Category</td>
+      <td>Name</td>
+      <td>Price</td>
+      <td>Stock</td>
+      <td>Ops</td>
+    </tr>
+    {{#each products}}
+    <tr>
+        <td class='table-id'>{{this.id}}</td>
+        <td class='table-category'>{{products.categoryNames}}</td>
+        <td class='table-name'>{{this.name}}</td>
+        <td class='table-price'>{{this.price}}</td>
+        <td class='table-stock'>{{this.stock}}</td>
+        <td class='table-ops'>
+          {{#if this.stock }}
+            YES
+          {{else}}
+              <span>Out Of Stock</span>
+          {{/if}}
+        </td>
+    </tr>
+    {{/each}}
+  </table>
+
+  <p>{{products.categoryNames.[1]}}</p>
+  <p>{{products.categoryNames}}</p>
+
+
+  {{#each products.categoryNames}}
+       <h2>{{@index}} - {{products.categoryNames}} - {{ products.categoryNames.[1]}}</h2>
+  {{/each}}
+
+</div>
+<hr>
+
+{{! Display array of objects, "if - else" is another helper }}
+{{! lookup finds index/property of the given object.,  .. means parent context}}
+{{!-- <table>
+    <tr><th>ID</th><th>Profile</th><th>Full Name</th><th>Administrator</th></tr>
+{{#each users}}
+    <tr>
+        <td>{{this.id}}</td>
+        <td>{{lookup ../genderIcons this.gender}}</td>
+        <td>{{this.name}}  {{this.lastname}}</td>
+        {{#if this.admin}}
+            <td>YES</td>
+        {{else}}
+            <td>NO</td>
+        {{/if}}
+    </tr>
+{{/each}}
+</table>
+<hr>
+
+
+<h2>Object Traversal for car object</h2>
+{{#each car as |value prop|}}
+  <p><b>{{prop}}</b> : {{value}}</p>
+{{/each}}
+<hr>
+
+{{! custom helper "inc" taking one parameter, no closing, each helper creates @index for index}}
+<h3>Standard each with custom "inc"</h3>
+{{#each friends}}
+   <h2>{{inc @index}} - {{this}}</h2>
+{{/each}}
+<hr>
+
+{{! custom helper "list", open-close syntax check out how it is implemented in js}}
+<h3>Custom helper "list"</h3>
+{{#list friends}}
+   <h2>{{index}} - {{name}}</h2>
+{{/list}}
+
+{{! section is used anywhere in the layout, for example in the header of the document }}
+{{#section "headerTags"}}
+<meta name="description" content="Handlebars">
+    <meta name="keywords" content="HTML,CSS,JavaScript,Handlebar">
+    <meta name="author" content="CTIS 478 Course">
+    <link href="/css/{{cssFile}}" rel="stylesheet" type="text/css"/>
+{{/section}}
+
+{{> footer param="Hello" name="CTIS478" }} --}}
