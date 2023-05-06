@@ -22,13 +22,13 @@
           {{/if}}
         </td>
         <td class='table-name'>{{this.name}}</td>
-        <td class='table-price'>{{this.price}}</td>
-        <td class='table-stock'>{{this.stock}}</td>
+        <td class='table-price'>${{this.price}}</td>
+        <td class='table-stock buy-{{this.id}}'>{{this.stock}}</td>
         <td class='table-ops'>
           {{#if this.stock }}
-              <button class="buy-button" id="{{this.id}}" >BUY</button>
+              <button class="buy-button button-{{this.id}}" id="{{this.id}}" >BUY</button>
           {{else}}
-            <span>Out of Stock</span>
+            <span class='out-of'>Out of Stock</span>
           {{/if}}
         </td>
     </tr>
@@ -38,15 +38,6 @@
 
 </div>
 <hr>
-
-  <script>
-    $(".buy-button").click(function () {
-        console.log(this.id);
-    });
-
-    console.log('fşjakdsşf');
-
-   </script>
 
    <!-- Socket.io script -->
 <script src="/socket.io/socket.io.js"></script>
@@ -62,8 +53,13 @@
     });
 
     // Socket.io üzerinden gelen verileri dinleme
-    socket.on('updateStock', function(updatedProduct) {
-      $('#buy-' + updatedProduct.id).closest('tr').find('.table-stock').text(updatedProduct.stock);
+    socket.on('hello', function(product) {
+      console.log(product);
+      $('td.buy-' + product.id).text(product.stock);
+      if (product.stock === 0) {
+        console.log('#button' + product.id)
+        $('#button-' + product.id).addClass('hel')
+      }
     });
   });
   

@@ -4,6 +4,10 @@ const path = require("path");
 const hbs = require("hbs");
 const db = require('./db'); // add db.js data to app.js
 const stocks = require('./routes/stocks.js');
+const fs = require("fs");
+const dbPath = './db.js';
+// db.js dosyasını okuyalım
+
 // //socket.io
 // const http = require("http");
 // const serverSocket = http.createServer();
@@ -17,7 +21,6 @@ const stocks = require('./routes/stocks.js');
 // server.js
 
 const app = express();
-
 
 app.use(express.static('public'));
 
@@ -35,6 +38,8 @@ const socketIo = require("socket.io");
 const server = http.createServer(app);
 const io = socketIo(server);
 
+const myDb = db;
+
 
 hbs.registerHelper("section", function(name, options) { 
     // "this" shows the main context object.
@@ -43,18 +48,18 @@ hbs.registerHelper("section", function(name, options) {
        return null;
  }); 
 
-app.get("/test", (req, res) => {
+app.get("/", (req, res) => {
     // Get input from post, get, url params
     // Process data, (insert into db)
  
-    const products = db.products;
-    products.categoryNames = db.category;
+    const products = myDb.products;
+    products.categoryNames = myDb.category;
    
     // Output: (html, json)
    res.render("mainUserTable", { 
      title: "Products",
      products: products,
-     categoryNames: db.category,
+     categoryNames: myDb.category,
      cssFile : "mainUsers.css",
      //layout: false   // to stop default layout
      //layout: "layout/base2"   // to use a different base
@@ -62,59 +67,59 @@ app.get("/test", (req, res) => {
  });
 
 
+ app.get("/stock/:id/:newStock", (req, res) => {
 
-// Socket.io bağlantısı
-io.on('connection', function(socket) {
-    console.log('Socket.io client connected');
-
-    // Stok azaltma olayını dinleme
-    socket.on('reduceStock', function(productId) {
-    const product = db.products.find(p => p.id == productId);
-    if (product && product.stock > 0) {
-        product.stock--;
-        io.emit('updateStock', product);
-    }
-    // server.js
-    
-    const http = require("http");
-    const socketIo = require("socket.io");
-    
-    const server = http.createServer(app);
-    const io = socketIo(server);
+    var products = myDb.products;
+    var productIndex;
+    products.forEach((p, index) => {
+        if (p.id == req.params.id) {
+            products[index].stock > 0 && (products[index].stock = req.params.newStock);
+            productIndex = index;
+        } 
     });
-});
+    myDb.products = products;
+    
+    res.redirect('/');
+ 
+ });
 
+ 
 
-app.get("/test", (req, res) => {
-  res.render("index", { products: db.products });
-});
 
 io.on("connection", (socket) => {
   console.log("A client has connected.");
 
-  socket.on("stock-update", (productId) => {
-    console.log(productId)
+
+
+
+  socket.on("stock-update", async (productId) => {
     // Find the product in the database
-    const productIndex = db.products.findIndex((p) => p.id === productId);
-    const product = db.products[productIndex];
-    console.log(product);
+
+    var products = myDb.products;
+    var productIndex;
+    products.forEach((p, index) => {
+        if (p.id == productId) {
+            products[index].stock > 0 && (products[index].stock -= 1);
+            productIndex = index;
+        } 
+    });
 
     // Update the product's stock and save the changes
-    if (product) {
-      product.stock--;
-      db.products[productIndex] = product;
-      console.log(product);
+    if (products) {
 
-      console.log(`Product ${product.id} stock has been updated to ${product.stock}`);
 
-        fs.writeFile('./db.js', (product), (err) => {
-        if (err) throw err;
-        console.log('Data updated!');
-        });
+
+        myDb.products = products;
+        
+        //console.log(myDb)
 
       // Emit a "stock-updated" event to all connected clients
-      io.emit("stock-decrease", product);
+     // io.emit("stock-decrease", products);
     }
+
+    socket.emit("hello", myDb.products[productIndex]);
+
+
   });
 });
 

@@ -1,7 +1,35 @@
 td {
-    color: green;
+    color: black;
+    padding: 10px;
 }
 
-body {
-    background-color: green;
+tr:first td {
+    font-weight: bold;
+}
+
+h2{
+    text-align: center;
+    font-size: 2rem;
+}
+
+table {
+    width: 900px;
+    margin: 0 auto;
+}
+
+table td {
+    text-align: center;
+}
+
+td,tr {
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+
+.out-of {
+    color: red;
+}
+
+button {
+    color: blue;
 }
