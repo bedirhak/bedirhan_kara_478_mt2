@@ -39,52 +39,43 @@
 </div>
 <hr>
 
+  <script>
+    $(".buy-button").click(function () {
+        console.log(this.id);
+    });
 
-{{! Display array of objects, "if - else" is another helper }}
-{{! lookup finds index/property of the given object.,  .. means parent context}}
-{{!-- <table>
-    <tr><th>ID</th><th>Profile</th><th>Full Name</th><th>Administrator</th></tr>
-{{#each users}}
-    <tr>
-        <td>{{this.id}}</td>
-        <td>{{lookup ../genderIcons this.gender}}</td>
-        <td>{{this.name}}  {{this.lastname}}</td>
-        {{#if this.admin}}
-            <td>YES</td>
-        {{else}}
-            <td>NO</td>
-        {{/if}}
-    </tr>
-{{/each}}
-</table>
-<hr>
+    console.log('fşjakdsşf');
+
+   </script>
+
+   <!-- Socket.io script -->
+<script src="/socket.io/socket.io.js"></script>
+
+<script>
+  $(document).ready(function() {
+    // Bağlantı kurulumu
+    const socket = io.connect();
+
+    // Butonlara olay dinleyicisi ekleme
+    $(".buy-button").click(function () {
+        socket.emit('stock-update', this.id);
+    });
+
+    // Socket.io üzerinden gelen verileri dinleme
+    socket.on('updateStock', function(updatedProduct) {
+      $('#buy-' + updatedProduct.id).closest('tr').find('.table-stock').text(updatedProduct.stock);
+    });
+  });
+  
 
 
-<h2>Object Traversal for car object</h2>
-{{#each car as |value prop|}}
-  <p><b>{{prop}}</b> : {{value}}</p>
-{{/each}}
-<hr>
+  
+</script>
 
-{{! custom helper "inc" taking one parameter, no closing, each helper creates @index for index}}
-<h3>Standard each with custom "inc"</h3>
-{{#each friends}}
-   <h2>{{inc @index}} - {{this}}</h2>
-{{/each}}
-<hr>
 
-{{! custom helper "list", open-close syntax check out how it is implemented in js}}
-<h3>Custom helper "list"</h3>
-{{#list friends}}
-   <h2>{{index}} - {{name}}</h2>
-{{/list}}
-
-{{! section is used anywhere in the layout, for example in the header of the document }}
 {{#section "headerTags"}}
-<meta name="description" content="Handlebars">
-    <meta name="keywords" content="HTML,CSS,JavaScript,Handlebar">
-    <meta name="author" content="CTIS 478 Course">
+<meta name="description" content="User Table">
+    <meta name="keywords" content="HTML,CSS,JavaScript,hds">
+    <meta name="author" content="Bedirhan Kara">
     <link href="/css/{{cssFile}}" rel="stylesheet" type="text/css"/>
 {{/section}}
-
-{{> footer param="Hello" name="CTIS478" }} --}}
